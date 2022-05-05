@@ -1,0 +1,63 @@
+basePath: /api
+definitions:
+  handler.ItemForCreatingShortURLRequest:
+    properties:
+      originURL:
+        type: string
+    required:
+    - originURL
+    type: object
+  handler.ItemForCreatingShortURLResponse:
+    properties:
+      shortURL:
+        type: string
+    required:
+    - shortURL
+    type: object
+host: 0.0.0.0:8080
+info:
+  contact: {}
+  description: Сервис сокращения URL'ов
+  title: Yet Another URL Shortener (yaus)
+  version: 0.1.0
+paths:
+  /v1/short/url:
+    get:
+      consumes:
+      - application/json
+      description: Метод для преобразования короткого URL в полный
+      parameters:
+      - in: query
+        name: shortURL
+        required: true
+        type: string
+      produces:
+      - text/html
+      responses:
+        "301":
+          description: ""
+      summary: Метод для получения полного URL
+      tags:
+      - v1
+    post:
+      consumes:
+      - application/json
+      description: Метод для сокращения полного URL в короткий
+      parameters:
+      - description: Исходный URL
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.ItemForCreatingShortURLRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.ItemForCreatingShortURLResponse'
+      summary: Метод для генерации сокращённого URL
+      tags:
+      - v1
+swagger: "2.0"

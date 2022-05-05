@@ -1,0 +1,97 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Сервис сокращения URL'ов",
+        "title": "Yet Another URL Shortener (yaus)",
+        "contact": {},
+        "version": "0.1.0"
+    },
+    "host": "0.0.0.0:8080",
+    "basePath": "/api",
+    "paths": {
+        "/v1/short/url": {
+            "get": {
+                "description": "Метод для преобразования короткого URL в полный",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "summary": "Метод для получения полного URL",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "shortURL",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "301": {
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "description": "Метод для сокращения полного URL в короткий",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "summary": "Метод для генерации сокращённого URL",
+                "parameters": [
+                    {
+                        "description": "Исходный URL",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.ItemForCreatingShortURLRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ItemForCreatingShortURLResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handler.ItemForCreatingShortURLRequest": {
+            "type": "object",
+            "required": [
+                "originURL"
+            ],
+            "properties": {
+                "originURL": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.ItemForCreatingShortURLResponse": {
+            "type": "object",
+            "required": [
+                "shortURL"
+            ],
+            "properties": {
+                "shortURL": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

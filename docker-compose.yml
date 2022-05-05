@@ -1,0 +1,50 @@
+version: "3.9"
+services:
+  postgresdb:
+    image: postgres
+    container_name: yaus_postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - DATABASE_HOST=postgresdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - data:/var/lib/postgresql/data
+    networks:
+      - my_app
+    healthcheck:
+      test: pg_isready -U ${DB_USER} -d ${DB_NAME}
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  migrate:
+    image: migrate/migrate
+    networks:
+      - my_app
+    volumes:
+      - ./schema:/migrations
+    command: [ "-path", "/migrations", "-database",  "postgres://postgres:postgres@postgresdb:5432/postgres?sslmode=disable", "up"]
+    depends_on:
+      - postgresdb
+
+  app:
+    container_name: yaus_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgresdb
+    networks:
+      - my_app
+    ports:
+      - "8080:8080"
+volumes:
+  data:
+
+networks:
+  my_app:
+    driver: bridge
